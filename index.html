@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>ML Lab</title>
+<style>
+:root{color-scheme:light;--page:#fafaf9;--paper:#fff;--ink:#21242a;--sub:#727882;--line:#e6e7e9;--control:#f1f2f4;--blue:#2b60ce;--blue-dark:#17479f;--red:#dc7669;--pointblue:#5889d6;--teal:#21887d;--gold:#bd8e40;--violet:#8477bf}
+*{box-sizing:border-box}
+html{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);line-height:1.43}
+button,input{font:inherit}
+button{cursor:pointer;border:0;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+button:disabled{opacity:.35;cursor:default}
+main{width:min(100%,1020px);margin:0 auto;padding:22px 20px 70px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:14px}
+.brand{font-size:19px;letter-spacing:-.06em;font-weight:790}
+.brand span{color:var(--blue)}
+.status{font-size:11px;color:var(--sub);letter-spacing:-.01em}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:16px 0 20px;padding:4px;background:#ededee;border-radius:11px}
+.tab{min-height:42px;border-radius:8px;background:transparent;color:#757b83;font-size:13px;font-weight:600;padding:10px 8px}
+.tab[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px #00000012}
+.game{display:none}.game.active{display:block}
+.intro{margin-bottom:14px}
+h1,h2,h3,p{margin-top:0}
+h2{font-size:21px;line-height:1.25;letter-spacing:-.055em;margin-bottom:2px;font-weight:730}
+h3{font-size:12px;color:#5f6670;letter-spacing:-.01em;font-weight:700;margin-bottom:10px}
+.desc{font-size:12px;color:var(--sub);margin:0}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:14px;align-items:start}
+.plots,.side{min-width:0;display:grid;gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:17px;min-width:0}
+.plot{display:block;width:100%;height:auto;background:#fff;overflow:hidden}
+.plot.square{aspect-ratio:1.365}
+.plot.wide{aspect-ratio:2}
+.plot text{font-family:inherit}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:7px 14px;font-size:11px;color:#68717c;margin-top:9px}
+.legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.dash{display:inline-block;width:13px;height:2px;flex:none}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{min-height:44px;border-radius:8px;flex:1;padding:9px 7px;white-space:nowrap;font-size:13px;font-weight:650}
+.primary{background:var(--blue);color:white}
+.primary:active{background:var(--blue-dark)}
+.secondary{background:var(--control);color:#48505c}
+.secondary:active{background:#e1e5eb}
+.controls h3{margin-bottom:12px}
+.controls label.range-label{display:flex;justify-content:space-between;gap:10px;margin:12px 0 4px;font-size:13px;color:#505963}
+.controls strong{font-variant-numeric:tabular-nums;color:var(--ink)}
+.controls input[type=range]{display:block;width:100%;height:38px;margin:0 0 2px;accent-color:var(--blue);touch-action:pan-y}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.metric{min-width:0;padding:11px 5px 10px 0}
+.metric:nth-child(even){padding-left:11px;border-left:1px solid var(--line)}
+.metric:nth-child(n+3){border-top:1px solid var(--line)}
+.metric small{display:block;font-size:10px;letter-spacing:-.01em;color:#79808a;line-height:1.35;min-height:16px}
+.metric b{display:block;margin-top:3px;font-size:20px;letter-spacing:-.045em;font-weight:730;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.predict{display:flex;align-items:end;gap:8px;margin-top:14px}
+.predict label{font-size:12px;color:#676f79;flex:1;min-width:0}
+.predict input{display:block;margin-top:5px;padding:0 10px;height:44px;width:100%;min-width:0;background:#fff;border:1px solid #d6dae0;border-radius:8px;color:var(--ink);font-size:16px}
+.predict button{height:44px;padding:0 13px;background:#252a32;color:#fff;border-radius:8px;font-size:12px;font-weight:680}
+.note{font-size:11px;margin:11px 0 0;color:#606b78;min-height:16px}
+.note.warn{color:#b45548}
+.progress-row{display:flex;justify-content:space-between;gap:6px;margin-top:12px;font-size:11px;color:var(--sub)}
+.bar{height:3px;background:#e8eaf0;margin-top:6px;overflow:hidden;border-radius:4px}
+.fill{height:100%;background:var(--blue);width:0;transition:width .17s}
+.math-note{width:100%;border-top:1px solid var(--line);padding:14px 4px 0;color:var(--sub);font-size:12px}
+.math-note summary{cursor:pointer;font-size:12px;font-weight:650;color:#4d5560;padding:2px 0}
+.math-note p{margin:9px 0 0;line-height:1.5}
+.formula{color:var(--ink);font-family:Georgia,serif;font-size:16px}
+.footer{margin:16px 0 0;font-size:11px;color:#8b9098}
+@media(max-width:740px){
+ main{padding:13px max(15px,env(safe-area-inset-right)) calc(38px + env(safe-area-inset-bottom)) max(15px,env(safe-area-inset-left))}
+ header{padding:4px 1px 13px}
+ .tabs{margin:12px 0 17px}
+ .layout{display:flex;flex-direction:column;gap:12px}
+ .plots,.side{display:contents}
+ .space-card{order:1}
+ .control-card{order:2}
+ .chartcard{order:3}
+ .math-note{order:4}
+ .card{padding:13px 14px;border-radius:10px;width:100%}
+ .plot.square{aspect-ratio:1.49}
+ .plot.wide{aspect-ratio:1.96}
+ .plot text{font-size:15px!important}
+ .intro{margin-bottom:10px}
+ h2{font-size:19px}
+ h3{margin-bottom:8px}
+ .legend{gap:6px 10px;font-size:10px}
+ .actions button{font-size:12px}
+ .controls label.range-label{margin-top:10px}
+ .metrics{margin-top:12px}
+ .metric{padding-top:9px;padding-bottom:9px}
+ .metric b{font-size:19px}
+ .footer{margin-top:14px}
+}
+@media(max-width:360px){.legend{gap:5px 8px;font-size:9px}.card{padding:12px}.tab{font-size:12px}.actions{gap:5px}.actions button{font-size:11px}.brand{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">ML<span>/</span>LAB</div><div class="status">v0.2</div></header>
+<nav class="tabs" role="tablist" aria-label="실험 선택">
+ <button class="tab" type="button" id="tab-p" role="tab" aria-selected="true" aria-controls="perceptron">퍼셉트론</button>
+ <button class="tab" type="button" id="tab-r" role="tab" aria-selected="false" aria-controls="regression">회귀 · 정규화</button>
+</nav>
+<section id="perceptron" class="game active" role="tabpanel" aria-labelledby="tab-p">
+ <div class="intro"><h2>퍼셉트론 수렴</h2><p class="desc">이론적 상한과 실제 업데이트 비교</p></div>
+ <div class="layout">
+  <div class="plots">
+   <section class="card space-card"><h3>결정 경계</h3>
+    <svg id="p-space" class="plot square" viewBox="0 0 580 425" role="img" aria-label="두 클래스와 퍼셉트론 결정 경계"></svg>
+    <div class="legend"><span><i class="dot" style="background:var(--red)"></i>+1</span><span><i class="dot" style="background:var(--pointblue)"></i>−1</span><span><i class="dash" style="background:var(--teal)"></i>학습 경계</span><span><i class="dash" style="background:var(--gold)"></i>기준 경계</span></div>
+    <div class="actions"><button type="button" id="p-next" class="secondary">+1 단계</button><button type="button" id="p-play" class="primary">학습 시작</button><button type="button" id="p-all" class="secondary">끝까지</button></div>
+   </section>
+   <section class="card chartcard"><h3>수렴 정리 · 업데이트 t</h3>
+    <svg id="p-lines" class="plot wide" viewBox="0 0 580 290" role="img" aria-label="내적과 노름, 이론적 상한 그래프"></svg>
+    <div class="legend"><span><i class="dash" style="background:var(--gold)"></i>tγ</span><span><i class="dash" style="background:var(--teal)"></i>w*·w</span><span><i class="dash" style="background:var(--violet)"></i>‖w‖</span><span><i class="dash" style="background:var(--red)"></i>R√t</span></div>
+   </section>
+  </div>
+  <div class="side">
+   <section class="card controls control-card"><h3>데이터 설정</h3>
+    <label class="range-label" for="p-count">표본 수 <strong id="p-count-val">36</strong></label><input type="range" id="p-count" min="12" max="72" value="36" step="4">
+    <label class="range-label" for="p-margin">마진 <strong id="p-margin-val">0.20</strong></label><input type="range" id="p-margin" min="8" max="65" value="20" step="1">
+    <label class="range-label" for="p-spread">데이터 퍼짐 <strong id="p-spread-val">1.20</strong></label><input type="range" id="p-spread" min="30" max="180" value="120" step="5">
+    <div class="actions"><button type="button" class="secondary" id="p-random">새 데이터</button><button type="button" class="secondary" id="p-reset">초기화</button></div>
+    <div class="metrics">
+     <div class="metric"><small>마진 γ</small><b id="p-gamma">—</b></div>
+     <div class="metric"><small>최대 노름 R</small><b id="p-R">—</b></div>
+     <div class="metric"><small>이론적 상한</small><b id="p-bound">—</b></div>
+     <div class="metric"><small>실제 업데이트</small><b id="p-step">0</b></div>
+    </div>
+    <div class="predict"><label for="p-guess">업데이트 횟수 예상<input id="p-guess" type="number" inputmode="numeric" min="0" step="1" value="15"></label><button type="button" id="p-judge">예상 저장</button></div>
+    <div class="progress-row"><span>상한 대비 진행</span><strong id="p-ratio">0%</strong></div><div class="bar"><div class="fill" id="p-progress"></div></div>
+    <p class="note" id="p-note" aria-live="polite">예상 횟수를 입력하고 학습을 시작하세요.</p>
+   </section>
+   <details class="math-note"><summary>수렴 정리</summary><p class="formula">tγ ≤ w*·wₜ ≤ ‖wₜ‖ ≤ R√t</p><p>선형 분리 가능한 데이터 · ‖w*‖=1 · w₀=0 · 학습률 1</p></details>
+  </div>
+ </div>
+</section>
+<section id="regression" class="game" role="tabpanel" aria-labelledby="tab-r">
+ <div class="intro"><h2>과적합과 정규화</h2><p class="desc">다항식 차수와 λ를 바꿔 일반화 오차 비교</p></div>
+ <div class="layout">
+  <div class="plots">
+   <section class="card space-card"><h3>회귀 곡선</h3>
+    <svg id="r-space" class="plot square" viewBox="0 0 580 425" role="img" aria-label="실제 함수, 표본, 정규화 전후 회귀 곡선"></svg>
+    <div class="legend"><span><i class="dot" style="background:var(--gold)"></i>표본</span><span><i class="dash" style="background:#87909c"></i>실제 함수</span><span><i class="dash" style="background:var(--red)"></i>λ = 0</span><span><i class="dash" style="background:var(--teal)"></i>선택 λ</span></div>
+   </section>
+   <section class="card chartcard"><h3>오차 비교 · MSE</h3>
+    <svg id="r-bars" class="plot wide" viewBox="0 0 580 285" role="img" aria-label="훈련 MSE와 테스트 MSE 막대 비교"></svg>
+   </section>
+  </div>
+  <div class="side">
+   <section class="card controls control-card"><h3>모델 설정</h3>
+    <label class="range-label" for="r-degree">다항식 차수 <strong id="r-degree-val">10</strong></label><input type="range" id="r-degree" min="1" max="14" value="10">
+    <label class="range-label" for="r-lambda">L2 정규화 λ <strong id="r-lambda-val">0.001</strong></label><input type="range" id="r-lambda" min="0" max="7" value="3">
+    <label class="range-label" for="r-count">표본 수 <strong id="r-count-val">16</strong></label><input type="range" id="r-count" min="10" max="40" value="16" step="2">
+    <label class="range-label" for="r-noise">노이즈 <strong id="r-noise-val">0.20</strong></label><input type="range" id="r-noise" min="0" max="55" value="20" step="5">
+    <div class="actions"><button type="button" class="secondary" id="r-random">새 데이터</button><button type="button" class="secondary" id="r-reset">초기화</button></div>
+    <div class="metrics">
+     <div class="metric"><small>λ=0 · 테스트 MSE</small><b id="r-test0">—</b></div>
+     <div class="metric"><small>선택 λ · 테스트 MSE</small><b id="r-test1">—</b></div>
+     <div class="metric"><small>λ=0 · ‖w‖</small><b id="r-norm0">—</b></div>
+     <div class="metric"><small>선택 λ · ‖w‖</small><b id="r-norm1">—</b></div>
+    </div>
+    <p class="note" id="r-note" aria-live="polite">λ를 조절해 테스트 오차를 비교하세요.</p>
+   </section>
+   <details class="math-note"><summary>손실 함수</summary><p class="formula">L(w) = MSE + λ‖w‖²</p><p>Chebyshev 다항식 기저 · 편향 계수 제외</p></details>
+  </div>
+ </div>
+</section>
+<p class="footer">계산은 기기 내 브라우저에서 처리됩니다.</p>
+</main>
+<script>
+(function(){'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(n,d=2)=>Number.isFinite(n)?Number(n).toLocaleString('ko-KR',{maximumFractionDigits:d}):'계산 불가';
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function rnd(seed){let t=seed|0;return()=>{t+=0x6D2B79F5;let v=t;v=Math.imul(v^(v>>>15),v|1);v^=v+Math.imul(v^(v>>>7),v|61);return((v^(v>>>14))>>>0)/4294967296;};}
+function normal(rand){let a=Math.max(1e-10,rand()),b=rand();return Math.sqrt(-2*Math.log(a))*Math.cos(2*Math.PI*b);}
+function axisSvg(W,H,left=42,bot=35){return `<path d="M ${left} 17 V ${H-bot} H ${W-14}" fill="none" stroke="#afb5bf" stroke-width="1"/>`;}
+function polyline(points,color,width=3,dash=''){return `<polyline fill="none" points="${points.map(p=>p.map(v=>Number(v).toFixed(2)).join(',')).join(' ')}" stroke="${color}" stroke-width="${width}" ${dash?'stroke-dasharray="'+dash+'"':''} stroke-linejoin="round" stroke-linecap="round"/>`;}
+function switchTab(t){for(const id of ['p','r']){const active=t===id;$(id==='p'?'perceptron':'regression').classList.toggle('active',active);$('tab-'+id).setAttribute('aria-selected',String(active));}stopP();}
+$('tab-p').addEventListener('click',()=>switchTab('p'));$('tab-r').addEventListener('click',()=>switchTab('r'));
+let pSeed=2305,pData=[],pHistory=[],pAt=0,pBound=0,pR=0,pGamma=0,pTarget=[Math.cos(.53),Math.sin(.53)],pTimer=null,pGuess=null;
+function generateP(){stopP();const rand=rnd(pSeed),n=+$('p-count').value,margin=+$('p-margin').value/100,spread=+$('p-spread').value/100;let pts=[];
+for(let i=0;i<n;i++){const y=i<n/2?1:-1;const normalCoord=y*(margin+rand()*.66);const tan=(rand()*2-1)*spread;pts.push({x:normalCoord*pTarget[0]-tan*pTarget[1],y:normalCoord*pTarget[1]+tan*pTarget[0],label:y});}
+for(let i=n-1;i>0;i--){const j=Math.floor(rand()*(i+1));[pts[i],pts[j]]=[pts[j],pts[i]];}
+pData=pts;pR=Math.max(...pts.map(z=>Math.hypot(z.x,z.y)));pGamma=Math.min(...pts.map(z=>z.label*(z.x*pTarget[0]+z.y*pTarget[1])));pBound=(pR/pGamma)**2;
+let w=[0,0],h=[{w:[0,0],hit:-1}],idx=0,clean=0,count=0;const maxErr=Math.max(2,Math.ceil(pBound)+3),maxCheck=(maxErr+3)*(n+1);
+while(clean<n && count<maxCheck && h.length<=maxErr){const z=pts[idx];const sign=w[0]*z.x+w[1]*z.y; if(z.label*sign<=0){w=[w[0]+z.label*z.x,w[1]+z.label*z.y];h.push({w:[...w],hit:idx});clean=0;}else{clean++;}idx=(idx+1)%n;count++;}
+pHistory=h;pAt=0;pGuess=null;$('p-guess').disabled=false;$('p-judge').disabled=false;$('p-note').className='note';$('p-note').textContent=(clean===n?'예상 횟수를 입력하고 학습을 시작하세요.':'계산 한도 초과. 조건을 바꿔 주세요.');
+$('p-count-val').textContent=n;$('p-margin-val').textContent=margin.toFixed(2);$('p-spread-val').textContent=spread.toFixed(2);$('p-gamma').textContent=fmt(pGamma,3);$('p-R').textContent=fmt(pR,3);$('p-bound').textContent=fmt(pBound,1);renderP();}
+function stopP(){if(pTimer!==null){clearInterval(pTimer);pTimer=null;}$('p-play').textContent='학습 시작';}
+function boundary(w,col,dash=''){const norm=Math.hypot(...w);if(norm<1e-9)return '';let perp=[-w[1]/norm,w[0]/norm],max=3.4;return `<line x1="${pX(-max*perp[0])}" y1="${pY(-max*perp[1])}" x2="${pX(max*perp[0])}" y2="${pY(max*perp[1])}" stroke="${col}" stroke-width="3" ${dash?'stroke-dasharray="'+dash+'"':''}/>`;}
+const pX=x=>290+x*110,pY=y=>215-y*88;
+function renderP(){const item=pHistory[pAt],w=item.w;let graph=`<defs><clipPath id="p-clip"><rect x="16" y="16" width="548" height="394" rx="8"/></clipPath></defs><g clip-path="url(#p-clip)">`;
+for(let i=-3;i<=3;i++){graph+=`<line x1="${pX(i)}" y1="16" x2="${pX(i)}" y2="409" stroke="#eff0f2"/><line x1="15" y1="${pY(i)}" x2="566" y2="${pY(i)}" stroke="#eff0f2"/>`;}
+graph+=boundary(pTarget,'#bd8e40','10 6');graph+=boundary(w,'#21887d');
+pData.forEach((z,i)=>{const x=pX(z.x),y=pY(z.y),col=z.label===1?'#dc7669':'#5889d6';graph+=`<circle cx="${x}" cy="${y}" r="5.6" fill="${col}" fill-opacity=".93"/>`;if(i===item.hit)graph+=`<circle cx="${x}" cy="${y}" r="11" fill="none" stroke="#323b48" stroke-width="2"/>`;});
+graph+='</g>';graph+=`<text x="24" y="32" font-size="15" fill="#5d6570">UPDATE ${pAt} / ${pHistory.length-1}</text>`;$('p-space').innerHTML=graph;
+const M=Math.max(1,pHistory.length-1),W=580,H=290,l=45,r=17,top=21,bt=35;
+const data=pHistory.slice(0,pAt+1).map((v,t)=>({t,dot:pTarget[0]*v.w[0]+pTarget[1]*v.w[1],norm:Math.hypot(...v.w),lo:t*pGamma,hi:pR*Math.sqrt(t)}));const ymax=Math.max(0.4,...data.map(v=>v.hi))*1.19;
+const x=t=>l+(W-l-r)*t/M,y=v=>H-bt-(H-top-bt)*v/ymax;
+let str=`${axisSvg(W,H,l,bt)}<text x="${l-15}" y="25" fill="#79818e" font-size="15">값</text><text x="${W-107}" y="${H-9}" fill="#79818e" font-size="15">업데이트 t</text>`;
+for(let j=0;j<=4;j++){const vy=ymax*j/4;str+=`<line x1="${l}" y1="${y(vy)}" x2="${W-r}" y2="${y(vy)}" stroke="#eff0f2"/><text x="${l-6}" y="${y(vy)+4}" text-anchor="end" fill="#79818e" font-size="15">${fmt(vy,1)}</text>`;}
+str+=`<text x="${l}" y="${H-10}" fill="#79818e" font-size="15">0</text><text x="${W-r}" y="${H-10}" text-anchor="end" fill="#79818e" font-size="15">${M}</text>`;
+for(const [k,col,dash] of [['lo','#bd8e40','6 4'],['hi','#dc7669','6 4'],['dot','#21887d',''],['norm','#8477bf','']]){const pts=data.map(v=>[x(v.t),y(v[k])]);if(pts.length===1)str+=`<circle cx="${pts[0][0]}" cy="${pts[0][1]}" r="4" fill="${col}"/>`;else str+=polyline(pts,col,2.6,dash);}
+$('p-lines').innerHTML=str;$('p-step').textContent=fmt(pAt,0)+(pAt===pHistory.length-1?' ✓':'');$('p-progress').style.width=(pBound>0?clamp(100*pAt/pBound,0,100):0).toFixed(3)+'%';$('p-ratio').textContent=fmt(pBound>0?100*pAt/pBound:0,2)+'%';
+$('p-next').disabled=pAt>=pHistory.length-1;$('p-all').disabled=pAt>=pHistory.length-1;
+if(pAt===pHistory.length-1){stopP();const pct=100*pAt/pBound;const judge=(pGuess!==null?` 예상 ${pGuess}회 · 오차 ${Math.abs(pGuess-pAt)}회.`:'');$('p-note').textContent=`수렴 · ${pAt}회 / 상한 ${fmt(pBound,1)}회 (${fmt(pct,2)}%).${judge}`;}
+}
+function nextP(){if(pAt<pHistory.length-1){pAt++;renderP();}else stopP();}
+$('p-count').addEventListener('input',generateP);$('p-margin').addEventListener('input',generateP);$('p-spread').addEventListener('input',generateP);$('p-random').addEventListener('click',()=>{pSeed++;generateP();});$('p-reset').addEventListener('click',()=>{stopP();pAt=0;pGuess=null;$('p-guess').disabled=false;$('p-judge').disabled=false;$('p-note').textContent='초기화 완료';renderP();});$('p-next').addEventListener('click',()=>{stopP();nextP();});$('p-all').addEventListener('click',()=>{pAt=pHistory.length-1;renderP();});$('p-play').addEventListener('click',()=>{if(pTimer!==null){stopP();return;}if(pAt>=pHistory.length-1){pAt=0;renderP();}pTimer=setInterval(nextP,210);$('p-play').textContent='일시정지';});
+$('p-judge').addEventListener('click',()=>{const val=Number($('p-guess').value);if(!Number.isInteger(val)||val<0||val>1e8){$('p-note').textContent='0 이상의 정수로 예측해 주세요.';return;}pGuess=val;$('p-guess').disabled=true;$('p-judge').disabled=true;$('p-note').textContent=`예상 ${pGuess}회 저장`;});
+let rSeed=9083,rData=[];const lambdas=[0,.00001,.0001,.001,.01,.05,.1,1];
+const truth=x=>.7*Math.sin(3.2*x)+.2*x;
+function basis(x,degree){const a=[1];if(degree===0)return a;a.push(x);for(let k=2;k<=degree;k++)a.push(2*x*a[k-1]-a[k-2]);return a;}
+function solve(A,b){const n=b.length,m=A.map((row,i)=>[...row,b[i]]);for(let j=0;j<n;j++){let best=j;for(let i=j+1;i<n;i++)if(Math.abs(m[i][j])>Math.abs(m[best][j]))best=i;if(Math.abs(m[best][j])<1e-13)return null;[m[j],m[best]]=[m[best],m[j]];const piv=m[j][j];for(let k=j;k<=n;k++)m[j][k]/=piv;for(let i=0;i<n;i++){if(i===j)continue;const z=m[i][j];for(let k=j;k<=n;k++)m[i][k]-=z*m[j][k];}}return m.map(row=>row[n]);}
+function fit(data,degree,lambda){const p=degree+1,A=Array.from({length:p},()=>Array(p).fill(0)),b=Array(p).fill(0),n=data.length;
+for(const pt of data){const f=basis(pt.x,degree);for(let i=0;i<p;i++){b[i]+=f[i]*pt.y/n;for(let j=0;j<p;j++)A[i][j]+=f[i]*f[j]/n;}}
+for(let j=0;j<p;j++)A[j][j]+=j===0?1e-12:lambda+1e-12;
+return solve(A,b)||Array(p).fill(0);
+}
+const predict=(x,w)=>basis(x,w.length-1).reduce((sum,v,i)=>sum+v*w[i],0);
+const mse=(data,w)=>data.reduce((s,p)=>s+(predict(p.x,w)-p.y)**2,0)/data.length;
+const rX=x=>44+(x+1)*246,rY=y=>210-y*110;
+function generateR(){const rand=rnd(rSeed),n=+$('r-count').value,noise=+$('r-noise').value/100;rData=Array.from({length:n},()=>{const x=-1+2*rand();return{x,y:truth(x)+noise*normal(rand)};});renderR();}
+function renderR(){const degree=+$('r-degree').value,li=+$('r-lambda').value,lambda=lambdas[li],noise=+$('r-noise').value/100;
+$('r-degree-val').textContent=degree;$('r-lambda-val').textContent=lambda;$('r-count-val').textContent=rData.length;$('r-noise-val').textContent=noise.toFixed(2);
+const w0=fit(rData,degree,0),w1=fit(rData,degree,lambda),test=Array.from({length:200},(_,i)=>({x:-1+2*i/199,y:truth(-1+2*i/199)}));
+const m0=mse(test,w0),m1=mse(test,w1),tr0=mse(rData,w0),tr1=mse(rData,w1),n0=Math.hypot(...w0),n1=Math.hypot(...w1);
+$('r-test0').textContent=fmt(m0,4);$('r-test1').textContent=fmt(m1,4);$('r-norm0').textContent=fmt(n0,3);$('r-norm1').textContent=fmt(n1,3);
+const axis= `<path d="M 44 14 V 406 M 536 14 V 406 M 44 210 H 536" stroke="#b8bec6" stroke-width="1" fill="none"/>`;
+let graph=`<defs><clipPath id="r-clip"><rect x="44" y="14" width="492" height="392"/></clipPath></defs><g clip-path="url(#r-clip)">${axis}`;
+for(let y=-1.5;y<=1.5;y+=.5){graph+=`<line x1="44" y1="${rY(y)}" x2="536" y2="${rY(y)}" stroke="#eff0f2"/>`;}
+const series=(fun,color,width,dash='')=>{let line=[];for(let i=0;i<=240;i++){const x=-1+2*i/240,v=clamp(fun(x),-30,30);line.push([rX(x),rY(v)]);}return polyline(line,color,width,dash);};
+graph+=series(truth,'#87909c',2.5,'6 5');graph+=series(x=>predict(x,w0),'#dc7669',2.5);graph+=series(x=>predict(x,w1),'#21887d',3.2);
+for(const pt of rData)graph+=`<circle cx="${rX(pt.x)}" cy="${rY(pt.y)}" r="5" fill="#bd8e40" stroke="#f9f5eb" stroke-width="1"/>`;graph+='</g>';$('r-space').innerHTML=graph;
+const values=[tr0,tr1,m0,m1],W=580,H=285,top=20,base=230,maxVal=Math.max(...values,.00001)*1.2;
+let str=`<path d="M 44 ${top} V ${base} H 566" stroke="#9ea5ad" fill="none"/>`;for(let j=0;j<=4;j++){const v=maxVal*j/4,y=base-(base-top)*j/4;str+=`<line x1="44" y1="${y}" x2="566" y2="${y}" stroke="#eff0f2"/><text x="39" y="${y+3}" font-size="14" text-anchor="end" fill="#79818e">${fmt(v,2)}</text>`;}
+const places=[105,210,357,462],colors=['#dc7669','#21887d','#dc7669','#21887d'];values.forEach((v,i)=>{const h=(base-top)*v/maxVal;str+=`<rect x="${places[i]-30}" y="${base-h}" width="60" height="${h}" rx="5" fill="${colors[i]}"/><text x="${places[i]}" y="${Math.max(15,base-h-6)}" font-size="15" text-anchor="middle" fill="#424954">${fmt(v,3)}</text><text x="${places[i]}" y="${base+19}" font-size="15" text-anchor="middle" fill="#6f7680">${i%2?'선택 λ':'λ=0'}</text>`;});str+=`<text x="157" y="280" fill="#707884" font-size="15" text-anchor="middle">훈련 MSE</text><text x="410" y="280" fill="#707884" font-size="15" text-anchor="middle">일반화 MSE</text>`;$('r-bars').innerHTML=str;
+const diff=(m0-m1);$('r-note').className='note'+(diff<-1e-7?' warn':'');$('r-note').textContent=lambda===0?'λ = 0 · 정규화 없음':diff>1e-5?`테스트 MSE ${fmt(100*diff/Math.max(1e-10,m0),1)}% 감소`:diff< -1e-5?`테스트 MSE ${fmt(100*(-diff)/Math.max(1e-10,m0),1)}% 증가`:'테스트 MSE 변화 거의 없음';
+}
+$('r-degree').addEventListener('input',renderR);$('r-lambda').addEventListener('input',renderR);$('r-count').addEventListener('input',generateR);$('r-noise').addEventListener('input',generateR);$('r-random').addEventListener('click',()=>{rSeed++;generateR();});$('r-reset').addEventListener('click',()=>{$('r-degree').value=10;$('r-lambda').value=3;$('r-count').value=16;$('r-noise').value=20;generateR();});
+generateP();generateR();
+})();
+</script>
+</body>
+</html>
